@@ -14,11 +14,12 @@ const userCreate = async (req, res, next) => {
 
         await newUser.save();
 
-        const token = jwt.sign({ id: user._id }, process.env.secret_key);
+        const token = jwt.sign({ id: newUser._id }, process.env.secret_key);
         res.cookie('token', token, {
             httpOnly: true,
             secure: true,
-            sameSite: 'strict'
+            sameSite: 'none',
+            maxAge: 86400000,
         });
 
         res.json({ message: 'User succesfully registered.' })
@@ -32,8 +33,8 @@ const userCreate = async (req, res, next) => {
 const userLogin = async (req, res, next) => {
     try {
         const { email, password } = req.body;
-        const doesUserExist = await User.findOne({ email });
-        if (!doesUserExist) {
+        const user = await User.findOne({ email });
+        if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
         const passwordMatch = bcrypt.compareSync(password, doesUserExist.password);
@@ -44,7 +45,8 @@ const userLogin = async (req, res, next) => {
         res.cookie('token', token, {
             httpOnly: true,
             secure: true,
-            sameSite: 'strict'
+            sameSite: 'none',
+            maxAge: 86400000,
         });
         res.json({ message: 'User login successfull' })
     } catch (error) {
