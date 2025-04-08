@@ -14,7 +14,7 @@ const userCreate = async (req, res, next) => {
 
         await newUser.save();
 
-        const token = jwt.sign({ data: email }, process.env.secret_key);
+        const token = jwt.sign({ id: user._id }, process.env.secret_key);
         res.cookie('token', token, {
             httpOnly: true,
             secure: true,
@@ -41,7 +41,11 @@ const userLogin = async (req, res, next) => {
             return res.status(400).json({ message: 'Invalid login credentials' });
         }
         const token = jwt.sign({ data: email }, process.env.secret_key);
-        res.cookie('token', token)
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'none'
+          });
         res.json({ message: 'User login successfull' })
     } catch (error) {
         next(error);
