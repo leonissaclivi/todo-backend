@@ -12,7 +12,7 @@ const getUserTodos = async (req,res)=>{
 const createTodo = async (req,res) => {
     try {
         const {task, completed} = req.body;
-        const todo = new Todo({task, completed, user:req.userId})
+        const todo = new Todo({task, completed, userId: req.userId})
         await todo.save();
         res.status(201).json(todo);
     } catch (error) {
