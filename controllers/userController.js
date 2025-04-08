@@ -40,12 +40,12 @@ const userLogin = async (req, res, next) => {
         if (!passwordMatch) {
             return res.status(400).json({ message: 'Invalid login credentials' });
         }
-        const token = jwt.sign({ data: email }, process.env.secret_key);
+        const token = jwt.sign({ id: user._id }, process.env.secret_key);
         res.cookie('token', token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'none'
-          });
+            secure: true,
+            sameSite: 'strict'
+        });
         res.json({ message: 'User login successfull' })
     } catch (error) {
         next(error);
