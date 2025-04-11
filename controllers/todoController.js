@@ -11,6 +11,9 @@ const getUserTodos = async (req,res)=>{
 
 const createTodo = async (req,res) => {
     try {
+        if (!req.body.task || typeof req.body.task !== 'string') {
+            return res.status(400).json({ message: 'Valid task text is required' });
+          }
         const {task, completed} = req.body;
         const todo = new Todo({task, completed, userId: req.userId})
         await todo.save();
