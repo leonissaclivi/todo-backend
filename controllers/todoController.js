@@ -25,16 +25,23 @@ const createTodo = async (req, res) => {
 
 const updateTodo = async (req, res) => {
     try {
-        const todo = Todo.findOneAndUpdate(
-            { _id: req.params.id, user: req.userId },
-            { completed: req.body.completed },
+        const todo = await Todo.findOneAndUpdate(
+            { _id: req.params.id, userId: req.userId }, // Changed 'user' to 'userId'
+            { $set: { 
+                task: req.body.task,
+                completed: req.body.completed 
+            }},
             { new: true }
-        )
-        res.json(todo)
-    } catch (error) {
-        console.error('Todo creation error:', error);
+        );
 
-    
+        if (!todo) {
+            return res.status(404).json({ message: 'Todo not found' });
+        }
+
+        res.json(todo);
+    } catch (error) {
+        console.error('Todo update error:', error);
+        
         if (error.name === 'ValidationError') {
             return res.status(400).json({
                 message: 'Validation failed',
@@ -43,7 +50,7 @@ const updateTodo = async (req, res) => {
         }
 
         res.status(500).json({
-            message: 'Failed to create todo',
+            message: 'Failed to update todo',
             error: process.env.NODE_ENV === 'development' ? error.message : undefined
         });
     }
