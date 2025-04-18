@@ -49,4 +49,38 @@ const updateTodo = async (req, res) => {
     }
 }
 
-module.exports = { getUserTodos, createTodo, updateTodo }
+const deleteTodo = async (req, res) => {
+    try {
+        const todo = await Todo.findOneAndDelete({
+            _id: req.params.id,
+            userId: req.userId
+        });
+
+        if (!todo) {
+            return res.status(404).json({
+                message: 'Todo not found or you are not authorized to delete it'
+            });
+        }
+
+        res.json({ 
+            message: 'Todo deleted successfully',
+            deletedTodo: todo 
+        });
+
+    } catch (error) {
+        console.error('Todo deletion error:', error);
+
+        if (error.name === 'CastError') {
+            return res.status(400).json({
+                message: 'Invalid todo ID format'
+            });
+        }
+
+        res.status(500).json({
+            message: 'Failed to delete todo',
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
+    }
+}
+
+module.exports = { getUserTodos, createTodo, updateTodo, deleteTodo }
