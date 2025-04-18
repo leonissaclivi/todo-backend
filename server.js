@@ -10,7 +10,11 @@ dotenv = require('dotenv').config();
 app.use(cookieParser());
 app.use(express.json());
 const corsOptions = {
-    origin: 'http://localhost:5173',
+  origin: [
+    'https://todo-frontend-eta-seven.vercel.app/',
+    'https://todo-frontend-leon-issac-livis-projects.vercel.app/',
+    'http://localhost:5173'
+  ],
     credentials: true, 
     methods: ['GET', 'POST', 'PUT','PATCH', 'DELETE'] 
   };
