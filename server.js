@@ -9,16 +9,27 @@ dotenv = require('dotenv').config();
 
 app.use(cookieParser());
 app.use(express.json());
-const corsOptions = {
-  origin: [
-    'https://todo-frontend-eta-seven.vercel.app/',
-    'https://todo-frontend-leon-issac-livis-projects.vercel.app/',
-    'http://localhost:5173'
-  ],
-    credentials: true, 
-    methods: ['GET', 'POST', 'PUT','PATCH', 'DELETE'] 
-  };
-app.use(cors(corsOptions));
+const allowedOrigins = [
+  'https://todo-frontend-eta-seven.vercel.app',
+  'https://todo-frontend-eta-seven.vercel.app',
+  'http://localhost:5173'
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+app.options('*', cors());
 
 mongoose.connect('mongodb+srv://leonissaclivi:ICin4FiLbdoAiuwM@cluster0.fgyjcml.mongodb.net/fullstacktrialTodo')
 .then(()=>console.log('connected to MongoDB')
