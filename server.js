@@ -9,6 +9,12 @@ dotenv = require('dotenv').config();
 
 app.use(cookieParser());
 app.use(express.json());
+
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Credentials', 'true');
+  next();
+});
+
 const allowedOrigins = [
   'https://todo-frontend-eta-seven.vercel.app',
   'https://todo-frontend-eta-seven.vercel.app',
