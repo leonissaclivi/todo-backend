@@ -11,8 +11,8 @@ app.use(cookieParser());
 app.use(express.json());
 const corsOptions = {
   origin: [
-    'https://todo-frontend-eta-seven.vercel.app/',
-    'https://todo-frontend-leon-issac-livis-projects.vercel.app/',
+    'https://todo-frontend-eta-seven.vercel.app/login',
+    'https://todo-frontend-leon-issac-livis-projects.vercel.app/login',
     'http://localhost:5173'
   ],
     credentials: true, 
